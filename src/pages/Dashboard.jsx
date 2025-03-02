@@ -1,34 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useTask } from "../hooks/useTask";
 
 function Dashboard() {
   const { user, logout } = useAuth();
+  const { tasks, addTask, toggleTask, deleteTask } = useTask();
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const response = await fetch("/data/tasks.json"); // Simulando API externa
-        if (!response.ok) throw new Error("Erro ao carregar tarefas");
-        const data = await response.json();
-        setTasks(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchTasks();
-  }, []);
+  const [newTask, setNewTask] = useState("");
 
   function handleLogout() {
     logout();
     navigate("/login");
+  }
+
+  function handleAddTask() {
+    if (newTask.trim() === "") return;
+    addTask(newTask);
+    setNewTask("");
   }
 
   return (
@@ -39,13 +28,27 @@ function Dashboard() {
 
       <h2>Suas Tarefas</h2>
 
-      {loading && <p>Carregando tarefas...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <input
+        type="text"
+        placeholder="Nova tarefa"
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+      />
+      <button onClick={handleAddTask}>Adicionar</button>
 
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>
-            {task.title} {task.completed ? "✅" : "❌"}
+            <span
+              onClick={() => toggleTask(task.id)}
+              style={{
+                textDecoration: task.completed ? "line-through" : "none",
+                cursor: "pointer",
+              }}
+            >
+              {task.title}
+            </span>
+            <button onClick={() => deleteTask(task.id)}>❌</button>
           </li>
         ))}
       </ul>
