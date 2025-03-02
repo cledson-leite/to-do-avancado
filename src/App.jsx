@@ -1,9 +1,19 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Tasks from "./pages/Tasks";
+
 function App() {
   return (
-    <div>
-      <h1>To-Do Avançado 🚀</h1>
-      <p>Projeto para gerenciar tarefas com React + Vite.</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/tasks" element={<Tasks />} />
+      </Routes>
+    </Router>
   );
 }
 
