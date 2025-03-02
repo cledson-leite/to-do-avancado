@@ -10,8 +10,11 @@ function Login() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    login(email, password);
-    navigate("/dashboard"); // Agora pode navegar sem erro
+    if (email && password) {
+      login(email, password);
+      navigate("/dashboard"); // Agora pode navegar sem erro
+    }
+    
   }
 
   return (
